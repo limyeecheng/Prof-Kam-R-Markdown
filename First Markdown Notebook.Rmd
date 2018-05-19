@@ -1,5 +1,5 @@
 ---
-title: "R Notebook"
+title: "R Notebook - Basic ggplot2 "
 output: html_notebook
 ---
 
@@ -16,3 +16,144 @@ Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by press
 When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
 
 The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
+# Anything after one hex appears as the main title.
+## Anything after two hexes appears as a subtitle.
+
+```{r}
+packages = c('RColorBrewer', 'classInt', 'tidyverse')
+
+for(p in packages){
+  if(!require(p, character.only = T)){
+    install.packages(p)
+  }
+  library(p, character.only = T)}
+
+```
+```{r, echo=TRUE}
+exam_data <- read_csv("data/Exam_data.csv")
+```
+```{r, echo = TRUE}
+ggplot(data = exam_data, aes(x = MATHS))
+```
+```{r, echo = TRUE}
+ggplot(data = exam_data, aes(x = RACE)) + 
+  geom_bar()
+```
+```{r, echo = TRUE}
+ggplot(data = exam_data, aes(x = MATHS)) + 
+  geom_histogram(binwidth = 20)
+
+## by default 'stat_bin() uses 'bins = 30'. Pick better value with 'binwidth'.
+```
+```{r, echo = TRUE}
+ggplot(data = exam_data, aes(x = MATHS)) + 
+  geom_histogram(bins = 20, color = "black", fill = "light blue")
+
+## by default 'stat_bin() uses 'bins = 30'. Pick better value with 'binwidth'.
+```
+```{r, echo = TRUE, fig.height=4, fig.width=8}
+ggplot(data = exam_data, aes(x = MATHS)) + 
+  geom_histogram(bins = 20, color = "black", fill = "light blue")
+
+## by default 'stat_bin() uses 'bins = 30'. Pick better value with 'binwidth'.
+```
+```{r, echo = TRUE, fig.height=4, fig.width=8}
+ggplot(data = exam_data, aes(x = MATHS)) + 
+  geom_histogram(bins = 20, color = "gray100", fill = "light blue")
+
+## by default 'stat_bin() uses 'bins = 30'. Pick better value with 'binwidth'.
+```
+```{r, echo = TRUE, fig.height=4, fig.width=8}
+ggplot(data = exam_data, aes(x = MATHS, fill = GENDER)) + 
+  geom_histogram(bins = 20, color = "gray30")
+
+## by default 'stat_bin() uses 'bins = 30'. Pick better value with 'binwidth'.
+```
+```{r, echo = TRUE, fig.height=4, fig.width=8}
+ggplot(data = exam_data, aes(x = MATHS, fill = GENDER)) + 
+  geom_dotplot(dotsize = 0.5)
+```
+```{r, echo = TRUE, fig.height=4, fig.width=8}
+ggplot(data = exam_data, aes(y = MATHS, x = GENDER)) + 
+  geom_boxplot(fill = "red")
+```
+```{r, echo = TRUE, fig.height=6, fig.width=8}
+ggplot(data = exam_data, aes(x = MATHS)) + 
+  geom_histogram(bins = 20) +
+    facet_grid(RACE ~ GENDER)
+```
+Note: tableau can do a wrap but not the facet grid.
+
+```{r, echo = TRUE, fig.height=8, fig.width=8}
+ggplot(data = exam_data, aes(y = MATHS, x = CLASS)) + 
+  geom_boxplot() +
+    facet_grid( ~ GENDER)
+```
+```{r, echo = TRUE, fig.height=8, fig.width=8}
+ggplot(data = exam_data, aes(y = MATHS, x = GENDER)) + 
+  geom_boxplot() +
+  facet_grid(GENDER ~ CLASS)
+```
+For facet grid, the first variable goes to rows and the second goes to column.
+
+```{r, echo = TRUE, fig.height=8, fig.width=8}
+ggplot(data = exam_data, aes(x = MATHS)) + 
+  geom_histogram() +
+    facet_wrap(~CLASS)
+```
+```{r, echo = TRUE, fig.height=8, fig.width=8}
+ggplot(data = exam_data, aes(y = MATHS, x = GENDER)) + 
+  geom_boxplot() +
+    stat_summary(geom = "point", fun.y = "mean", color = "red", size = 4)
+```
+```{r, echo = TRUE, fig.height=8, fig.width=8}
+ggplot(data = exam_data, aes(y = MATHS, x = GENDER)) + 
+  geom_boxplot() +
+    geom_point(stat = "summary", fun.y = "mean", color = "red", size = 4)
+```
+```{r, echo = TRUE, fig.height=6, fig.width=8}
+ggplot(data = exam_data, aes(y = ENGLISH, x = MATHS)) + 
+  geom_point()
+```
+```{r, echo = TRUE, fig.height=6, fig.width=8}
+ggplot(data = exam_data, aes(y = ENGLISH, x = MATHS)) + 
+  geom_point() +
+    geom_smooth(method=lm)
+```
+```{r, echo = TRUE, fig.height=6, fig.width=8}
+ggplot(data = exam_data, aes(y = ENGLISH, x = MATHS)) + 
+  geom_point() +
+    geom_smooth()
+```
+Default method for geom_smooth is loess and not least sqaures (lm).
+
+```{r, echo = TRUE, fig.height=6, fig.width=8}
+ggplot(data = exam_data, aes(y = ENGLISH, x = MATHS)) + 
+  geom_point() +
+    coord_cartesian(xlim = c(0,100), ylim = c(0,100))
+```
+Without setting x and y coordinate limits, the default will go with min and maximum values of the data points.
+
+```{r, echo = TRUE, fig.height=6, fig.width=8}
+ggplot(data = exam_data, aes(x = RACE)) + 
+  geom_bar() +
+    coord_flip()
+```
+```{r, echo = TRUE, fig.height=6, fig.width=8}
+ggplot(data = exam_data, aes(x = RACE)) + 
+  geom_bar() +
+    coord_flip() + 
+      theme_minimal() + 
+        theme(text = element_text(color = "red"))
+```
+```{r, echo = TRUE, fig.height=6, fig.width=8}
+d_bg = exam_data[, -3] # background data just without the 3rd colum i.e. GENDER
+
+ggplot(exam_data, aes(x = ENGLISH, fill = GENDER)) + 
+  geom_histogram(data = d_bg, fill = "grey", alpha = 0.3) + 
+  geom_histogram(color = "black") + 
+  facet_wrap(~ GENDER) + 
+  guides(fill = FALSE) + # to remove the legend
+  theme_bw() # for clean look 
+```
